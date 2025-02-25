@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { BrowserRouter, Link, Routes, Route } from 'react-router-dom'
 
 const Menu = () => {
   const padding = {
@@ -74,7 +75,7 @@ const CreateNew = (props) => {
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input name='info' value={info} onChange={(e) => setInfo(e.target.value)} />
         </div>
         <button>create</button>
       </form>
@@ -122,15 +123,26 @@ const App = () => {
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
   }
 
+  const padding = {
+    padding: 5
+  }
+
   return (
-    <div>
-      <h1>Software anecdotes</h1>
-      <Menu />
-      <AnecdoteList anecdotes={anecdotes} />
-      <About />
-      <CreateNew addNew={addNew} />
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <div>
+        <Link style={padding} to='/'>anecdotes</Link>
+        <Link style={padding} to='/create'>new anecdote</Link>
+        <Link style={padding} to='/about'>about</Link>
+      </div>
+      <Routes>
+        <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
+        <Route path='/create' element={<CreateNew addNew={addNew} />} />
+        <Route path='/about' element={<About />} />
+      </Routes>
+      <div>
+        <Footer />
+      </div>
+    </BrowserRouter>
   )
 }
 
