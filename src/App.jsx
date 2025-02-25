@@ -1,5 +1,7 @@
-import { useState } from 'react'
-import { Link, Routes, Route, useMatch } from 'react-router-dom'
+import { useContext, useState, createContext } from 'react'
+import { Link, Routes, Route, useMatch, useNavigate } from 'react-router-dom'
+
+const NotificationContext = createContext()
 
 const Menu = () => {
   const padding = {
@@ -67,11 +69,13 @@ const Footer = () => (
   </div>
 )
 
+
 const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
-
+  const navigate = useNavigate()
+  const context = useContext(NotificationContext)
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -81,6 +85,9 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    navigate('/')
+    context[1](`a new anecdote ${content} created!`)
+    setTimeout(() => context[1](''), 5000)
   }
 
   return (
@@ -129,6 +136,7 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+
   }
 
   const anecdoteById = (id) =>
@@ -150,6 +158,7 @@ const App = () => {
   }
 
 
+
   const match = useMatch('/anecdotes/:id')
   const anecdote = match
     ? anecdotes.find(x => x.id === Number(match.params.id))
@@ -157,20 +166,23 @@ const App = () => {
 
   return (
     <div>
-      <div>
-        <Link style={padding} to='/'>anecdotes</Link>
-        <Link style={padding} to='/create'>new anecdote</Link>
-        <Link style={padding} to='/about'>about</Link>
-      </div>
-      <Routes>
-        <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
-        <Route path='/create' element={<CreateNew addNew={addNew} />} />
-        <Route path='/about' element={<About />} />
-        <Route path='/anecdotes/:id' element={<Anecdote anecdote={anecdote} />} />
-      </Routes>
-      <div>
-        <Footer />
-      </div>
+      <NotificationContext.Provider value={[notification, setNotification]}>
+        <div>
+          <Link style={padding} to='/'>anecdotes</Link>
+          <Link style={padding} to='/create'>new anecdote</Link>
+          <Link style={padding} to='/about'>about</Link>
+        </div>
+        {notification}
+        <Routes>
+          <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
+          <Route path='/create' element={<CreateNew addNew={addNew} />} />
+          <Route path='/about' element={<About />} />
+          <Route path='/anecdotes/:id' element={<Anecdote anecdote={anecdote} />} />
+        </Routes>
+        <div>
+          <Footer />
+        </div>
+      </NotificationContext.Provider >
     </div>
   )
 }
