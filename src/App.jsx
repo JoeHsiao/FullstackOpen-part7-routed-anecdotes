@@ -72,9 +72,10 @@ const Footer = () => (
 
 
 const CreateNew = (props) => {
-  const contentObj = useField('content')
-  const authorObj = useField('author')
-  const infoObj = useField('info')
+  const { reset: contentReset, ...contentObj } = useField('content')
+  const { reset: authorReset, ...authorObj } = useField('author')
+  const { reset: infoReset, ...infoObj } = useField('info')
+
   const navigate = useNavigate()
   const context = useContext(NotificationContext)
 
@@ -92,10 +93,12 @@ const CreateNew = (props) => {
   }
 
   const handleReset = () => {
-    contentObj.reset()
-    authorObj.reset()
-    infoObj.reset()
+    contentReset()
+    authorReset()
+    infoReset()
   }
+
+
 
   return (
     <div>
