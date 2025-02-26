@@ -1,5 +1,6 @@
 import { useContext, useState, createContext } from 'react'
 import { Link, Routes, Route, useMatch, useNavigate } from 'react-router-dom'
+import { useField } from '../hooks'
 
 const NotificationContext = createContext()
 
@@ -71,24 +72,26 @@ const Footer = () => (
 
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+  const contentObj = useField('content')
+  const authorObj = useField('author')
+  const infoObj = useField('info')
   const navigate = useNavigate()
   const context = useContext(NotificationContext)
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content,
-      author,
-      info,
+      content: contentObj.value,
+      author: authorObj.value,
+      info: infoObj.value,
       votes: 0
     })
     navigate('/')
-    context[1](`a new anecdote ${content} created!`)
+    context[1](`a new anecdote ${contentObj.value} created!`)
     setTimeout(() => context[1](''), 5000)
   }
+
+
 
   return (
     <div>
@@ -96,15 +99,15 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          <input {...contentObj} />
         </div>
         <div>
           author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input {...authorObj} />
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e) => setInfo(e.target.value)} />
+          <input {...infoObj} />
         </div>
         <button>create</button>
       </form>
