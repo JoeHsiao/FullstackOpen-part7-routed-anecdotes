@@ -91,7 +91,11 @@ const CreateNew = (props) => {
     setTimeout(() => context[1](''), 5000)
   }
 
-
+  const handleReset = () => {
+    contentObj.reset()
+    authorObj.reset()
+    infoObj.reset()
+  }
 
   return (
     <div>
@@ -109,7 +113,8 @@ const CreateNew = (props) => {
           url for more info
           <input {...infoObj} />
         </div>
-        <button>create</button>
+        <button type='submit'>create</button>
+        <button type='reset' onClick={handleReset}>reset</button>
       </form>
     </div>
   )
